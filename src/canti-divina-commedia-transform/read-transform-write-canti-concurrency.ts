@@ -15,20 +15,17 @@ import {appendFileObs} from '../fs-observables/fs-observables';
 import {transformCanto} from './transform-canto';
 import {config} from '../config';
 
-export function readTransformWriteCantiConcurrency(concurrencyLevel?: number, inputDir?: string) {
-    const sourceDir = inputDir ? inputDir : config.divinaCommediaCantiDir;
-    const logFile = config.divinaCommediaCantiTransformedDirConcurrency + 'log.txt';
+const logFile = config.divinaCommediaCantiTransformedDirConcurrency + 'log.txt';
+
+export function readTransformWriteCantiConcurrency(concurrencyLevel: number, sourceDir: string) {
     return fileListObs(sourceDir)
             .switchMap(cantiFileNames => Observable.from(cantiFileNames))
             .mergeMap(fileName => readTransformWriteCantoFromFile(fileName), concurrencyLevel)
-            .mergeMap(fileWritten => appendFileObs(logFile, fileWritten + '\n'));
 }
 
 function readTransformWriteCantoFromFile(cantoFileName: string) {
     return readLinesObs(cantoFileName)
-            .map(cantoLines => {
-                return {name: cantoFileName, content: cantoLines};
-            })
-            .map(canto => transformCanto(canto, config.divinaCommediaCantiTransformedDirConcurrency))
-            .mergeMap(cantoTranformed => writeFileObs(cantoTranformed.name, cantoTranformed.content));
+            .map(cantoLines => transformCanto({name: cantoFileName, content: cantoLines}, config.divinaCommediaCantiTransformedDirConcurrency))
+            .switchMap(cantoTranformed => writeFileObs(cantoTranformed.name, cantoTranformed.content))
+            .switchMap(fileWritten => appendFileObs(logFile, fileWritten + '\n'));
 }

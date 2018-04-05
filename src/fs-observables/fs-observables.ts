@@ -64,7 +64,7 @@ export function fileListObs(fromDirPath: string) {
     return _fileListObs(fromDirPath);
 }
 const _fileListObs = Observable.bindNodeCallback(dir.files);
-
+export const readDirObs = fileListObs;
 
 // ============  Emits each name of the files present in a directory and subdirectories =========
 // returns and Observable which emits for each file found in the directory and all its subdirectories

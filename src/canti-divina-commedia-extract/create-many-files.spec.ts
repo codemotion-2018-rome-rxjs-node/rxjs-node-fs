@@ -1,6 +1,6 @@
 import 'mocha';
 
-import {config} from '../config';
+// import {config} from '../config';
 import {fileListObs} from '../fs-observables/fs-observables';
 import {deleteDirObs} from '../fs-observables/fs-observables';
 import {duplicateCanti} from './create-many-files';
@@ -9,14 +9,15 @@ describe('duplicateCanti function', () => {
     
     it('creates many copies of the divina commedia canti files', done => {
         const iterations = 2;
-        deleteDirObs(config.divinaCommediaCantiDirMany)
-        .switchMap(_dirDeleted => duplicateCanti(iterations, 10))
+        const targetDir = 'canti-divina-commedia-many-test/';
+        deleteDirObs(targetDir)
+        .switchMap(_dirDeleted => duplicateCanti(iterations, 10, targetDir))
         .subscribe(
             undefined,
             err => done(err),
             () => {
                 let numberOfWrittenFiles: number;
-                fileListObs(config.divinaCommediaCantiDirMany)
+                fileListObs(targetDir)
                 .subscribe (
                     files => numberOfWrittenFiles = files.length,
                     err => done(err),

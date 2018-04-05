@@ -4,7 +4,7 @@ import {config} from '../config';
 import {deleteDirPromise, filesPromise} from '../fs-async-await/fs-promise';
 import {readTransformWriteCanti} from './read-transform-write-canti';
 
-describe('readTransformWriteCanti function', () => {
+describe('readTransformWriteCanti async-await function', () => {
 
     let expectedWrittenFiles: number;
     const targetDir = config.divinaCommediaCantiTransformedDirAsyncAwait;

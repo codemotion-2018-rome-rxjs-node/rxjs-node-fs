@@ -12,7 +12,7 @@ describe('readTransformWriteCantiConcurrency function', () => {
         deleteDirObs(config.divinaCommediaCantiTransformedDirConcurrency)
         .switchMap(_dirDeleted => fileListObs(config.divinaCommediaCantiDir))
         .map(files => numberOfSourceFiles = files.length)
-        .switchMap(_data => readTransformWriteCantiConcurrency(20))
+        .switchMap(_data => readTransformWriteCantiConcurrency(20, config.divinaCommediaCantiDir))
         .subscribe(
             undefined,
             err => done(err),

@@ -1,10 +1,13 @@
 
+import 'rxjs/add/operator/do';
 import {readTransformWriteCanti} from './read-transform-write-canti';
-import {config} from '../config';
+
+const dirWith100Files = 'canti-divina-commedia';
+const dirWith10000Files = 'canti-divina-commedia-many';
+const dirS3 = '/Users/penrico/s3-drive';
 
 const start = Date.now();
-// readTransformWriteCanti()
-readTransformWriteCanti(config.divinaCommediaCantiDirMany)
+readTransformWriteCanti(dirS3)
 .subscribe(
     undefined,
     err => console.error(err),
@@ -14,3 +17,8 @@ readTransformWriteCanti(config.divinaCommediaCantiDirMany)
         console.log('elapsed ' + (end - start));
     }
 )
+
+
+
+
+console.log(dirWith100Files, dirWith10000Files, dirS3);
