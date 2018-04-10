@@ -5,18 +5,23 @@ import { Observable } from 'rxjs';
 import {readDirObs} from './fs-observables/fs-observables';
 import {readLinesObs} from './fs-observables/fs-observables';
 
-const sourceDir = 'canti-divina-commedia/';
+const sourceDir = 'canti-divina-commedia-100/';
+
 
 
 readDirObs(sourceDir)
 .switchMap(data => Observable.from(data))
 .mergeMap(file => readLinesObs(file))
-.take(2)
+.take(1)
 .subscribe(
     data => console.log(data),
     err => console.error(err),
     () => console.log('I AM DONE')
 )
+
+
+
+
 
 
 

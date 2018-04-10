@@ -1,14 +1,15 @@
 
 import 'rxjs/add/operator/do';
-import {readTransformWriteCantiConcurrency} from './read-transform-write-canti-concurrency';
+import {transformAllFiles} from './read-transform-write-canti-concurrency';
 
-const dirWith100Files = 'canti-divina-commedia';
-const dirWith10000Files = 'canti-divina-commedia-many';
+const dirWith100Files = 'canti-divina-commedia-100';
+const dirWith10000Files = 'canti-divina-commedia-10000';
 const dirS3 = '/Users/penrico/s3-drive';
 const dirGoogleStream = '/Users/penrico/Google Drive File Stream/My Drive/canti-divina-commedia-many';
 
+
 const start = Date.now();
-readTransformWriteCantiConcurrency(20, dirWith10000Files)
+transformAllFiles(dirWith10000Files, 20)
 .subscribe(
     null,
     err => console.error(err),
@@ -28,4 +29,4 @@ readTransformWriteCantiConcurrency(20, dirWith10000Files)
 
 
 
-console.log(dirWith100Files, dirWith10000Files, dirS3, dirGoogleStream);
+console.log(dirWith100Files.substr(0, 0), dirWith10000Files.substr(0, 0), dirS3.substr(0, 0), dirGoogleStream.substr(0, 0));

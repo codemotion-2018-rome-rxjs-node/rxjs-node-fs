@@ -3,16 +3,16 @@ import 'mocha';
 import {config} from '../config';
 import {fileListObs} from '../fs-observables/fs-observables';
 import {deleteDirObs} from '../fs-observables/fs-observables';
-import {readTransformWriteCantiConcurrency} from './read-transform-write-canti-concurrency';
+import {transformAllFiles} from './read-transform-write-canti-concurrency';
 
-describe('readTransformWriteCantiConcurrency function', () => {
+describe('readTransformWriteCanti function - with concurrency', () => {
     
     it('transforms the Canti and writes them in a new directory - checks if the number of transformed files is correct', done => {
         let numberOfSourceFiles: number;
         deleteDirObs(config.divinaCommediaCantiTransformedDirConcurrency)
         .switchMap(_dirDeleted => fileListObs(config.divinaCommediaCantiDir))
         .map(files => numberOfSourceFiles = files.length)
-        .switchMap(_data => readTransformWriteCantiConcurrency(20, config.divinaCommediaCantiDir))
+        .switchMap(_data => transformAllFiles(config.divinaCommediaCantiDir, 20))
         .subscribe(
             undefined,
             err => done(err),

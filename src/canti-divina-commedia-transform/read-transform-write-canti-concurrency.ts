@@ -6,26 +6,57 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/bufferCount';
 import 'rxjs/add/operator/concatMap';
+import 'rxjs/add/operator/do';
 
-import {fileListObs} from '../fs-observables/fs-observables';
+import {readDirObs} from '../fs-observables/fs-observables';
 import {readLinesObs} from '../fs-observables/fs-observables';
 import {writeFileObs} from '../fs-observables/fs-observables';
-import {appendFileObs} from '../fs-observables/fs-observables';
+import {writeLogObs} from '../fs-observables/fs-observables';
 
 import {transformCanto} from './transform-canto';
 import {config} from '../config';
 
-const logFile = config.divinaCommediaCantiTransformedDirConcurrency + 'log.txt';
 
-export function readTransformWriteCantiConcurrency(concurrencyLevel: number, sourceDir: string) {
-    return fileListObs(sourceDir)
+const targetDir = config.divinaCommediaCantiTransformedDirConcurrency;
+const logFile = targetDir + 'log.txt';
+
+export function transformAllFiles(sourceDir: string, concurrencyLevel: number) {
+    return readDirObs(sourceDir)
             .switchMap(cantiFileNames => Observable.from(cantiFileNames))
-            .mergeMap(fileName => readTransformWriteCantoFromFile(fileName), concurrencyLevel)
+            .mergeMap(fileName => transformFile(fileName), concurrencyLevel);
 }
 
-function readTransformWriteCantoFromFile(cantoFileName: string) {
+function transformFile(cantoFileName: string) {
     return readLinesObs(cantoFileName)
-            .map(cantoLines => transformCanto({name: cantoFileName, content: cantoLines}, config.divinaCommediaCantiTransformedDirConcurrency))
+            .map(cantoLines => transformCanto({name: cantoFileName, content: cantoLines}, targetDir))
             .switchMap(cantoTranformed => writeFileObs(cantoTranformed.name, cantoTranformed.content))
-            .switchMap(fileWritten => appendFileObs(logFile, fileWritten + '\n'));
+            .switchMap(fileWritten => writeLogObs(logFile, fileWritten + '\n'));
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// check the number of concurrent processing
+// export var filesOpen = 0;
+// function transformFile(cantoFileName: string) {
+//     filesOpen++
+//     console.log(filesOpen)
+// return readLinesObs(cantoFileName)
+//         .map(cantoLines => transformCanto({name: cantoFileName, content: cantoLines}, targetDir))
+//         .switchMap(cantoTranformed => writeFileObs(cantoTranformed.name, cantoTranformed.content))
+//         .switchMap(fileWritten => writeLogObs(logFile, fileWritten + '\n'))
+//             .do(_ => filesOpen--)
+//             .do(_ => console.log(filesOpen))
+// }

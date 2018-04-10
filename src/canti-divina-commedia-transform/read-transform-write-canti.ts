@@ -5,25 +5,26 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/map';
 
-import {fileListObs} from '../fs-observables/fs-observables';
+import {readDirObs} from '../fs-observables/fs-observables';
 import {readLinesObs} from '../fs-observables/fs-observables';
 import {writeFileObs} from '../fs-observables/fs-observables';
-import {appendFileObs} from '../fs-observables/fs-observables';
+import {writeLogObs} from '../fs-observables/fs-observables';
 
 import {transformCanto} from './transform-canto';
 import {config} from '../config';
 
-export function readTransformWriteCanti(inputDir?: string) {
-    const sourceDir = inputDir ? inputDir : config.divinaCommediaCantiDir;
-    const logFile = config.divinaCommediaCantiTransformedDir + 'log.txt';
-    return fileListObs(sourceDir)
+const targetDir = config.divinaCommediaCantiTransformedDir;
+const logFile = targetDir + 'log.txt';
+
+export function transformAllFiles(sourceDir: string) {
+    return readDirObs(sourceDir)
             .switchMap(cantiFileNames => Observable.from(cantiFileNames))
-            .mergeMap(cantoFileName => readLinesObs(cantoFileName)
-                                        .map(cantoLines => {
-                                            return {name: cantoFileName, content: cantoLines};
-                                        })
-            )
-            .map(canto => transformCanto(canto, config.divinaCommediaCantiTransformedDir))
-            .mergeMap(cantoTranformed => writeFileObs(cantoTranformed.name, cantoTranformed.content))
-            .mergeMap(fileWritten => appendFileObs(logFile, fileWritten + '\n'));
+            .mergeMap(fileName => transformFile(fileName))
+}
+
+function transformFile(cantoFileName: string) {
+    return readLinesObs(cantoFileName)
+            .map(cantoLines => transformCanto({name: cantoFileName, content: cantoLines}, targetDir))
+            .switchMap(cantoTranformed => writeFileObs(cantoTranformed.name, cantoTranformed.content))
+            .switchMap(fileWritten => writeLogObs(logFile, fileWritten + '\n'));
 }

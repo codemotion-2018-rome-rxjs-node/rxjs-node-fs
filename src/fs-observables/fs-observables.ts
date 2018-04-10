@@ -99,6 +99,7 @@ function appendFileNode(filePath: string, line: string, cb: (err, data: string) 
     });
 }
 const _appendFile = Observable.bindNodeCallback(appendFileNode);
+export const writeLogObs = appendFileObs;
 
 // ============  Deletes a file and emits when completed =========
 // returns and Observable which emits the name of the file when the line has been deleted or an error otherwise

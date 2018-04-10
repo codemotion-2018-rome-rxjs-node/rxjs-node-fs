@@ -2,16 +2,16 @@ import 'mocha';
 
 import {config} from '../config';
 import {deleteDirObs, fileListObs} from '../fs-observables/fs-observables';
-import {readTransformWriteCanti} from './read-transform-write-canti';
+import {transformAllFiles} from './read-transform-write-canti';
 
-describe('readTransformWriteCanti function', () => {
+describe('transformAllFiles function', () => {
     
     it('transforms the Canti and writes them in a new directory - checks if the number of transformed files is correct', done => {
         let numberOfSourceFiles: number;
         deleteDirObs(config.divinaCommediaCantiTransformedDir)
         .switchMap(_dirDeleted => fileListObs(config.divinaCommediaCantiDir))
         .map(files => numberOfSourceFiles = files.length)
-        .switchMap(_data => readTransformWriteCanti())
+        .switchMap(_data => transformAllFiles(config.divinaCommediaCantiDir))
         .subscribe(
             undefined,
             err => done(err),

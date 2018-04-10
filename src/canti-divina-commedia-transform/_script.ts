@@ -1,13 +1,13 @@
 
 import 'rxjs/add/operator/do';
-import {readTransformWriteCanti} from './read-transform-write-canti';
+import {transformAllFiles} from './read-transform-write-canti';
 
-const dirWith100Files = 'canti-divina-commedia';
-const dirWith10000Files = 'canti-divina-commedia-many';
+const dirWith100Files = 'canti-divina-commedia-100';
+const dirWith10000Files = 'canti-divina-commedia-10000';
 const dirS3 = '/Users/penrico/s3-drive';
 
 const start = Date.now();
-readTransformWriteCanti(dirS3)
+transformAllFiles(dirWith10000Files)
 .subscribe(
     undefined,
     err => console.error(err),
@@ -21,4 +21,4 @@ readTransformWriteCanti(dirS3)
 
 
 
-console.log(dirWith100Files, dirWith10000Files, dirS3);
+console.log(dirWith100Files.substr(0, 0), dirWith10000Files.substr(0, 0), dirS3.substr(0, 0));
